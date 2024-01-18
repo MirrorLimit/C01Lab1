@@ -1,34 +1,36 @@
 import React, { useState } from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 import { v4 as uuidv4 } from 'uuid';
+import AddTask from './AddTask';
 
-const ToDoList = ([toDos]) => {
+const ToDoList = ({toDos}) => {
     const [titles, update_titles] = useState(toDos.map((value) => ({id : uuidv4(), title: value}))); // getting all values in titles?
 
-    const addToDo = (newTitle) => [
-        ...titles, {id : uuidv4(), title: newTitle}
-    ];
+    const addToDo = (newTitle) => (
+        update_titles((prevTitles) => [...prevTitles, {id : uuidv4(), title : newTitle}])
+    );
 
-    const removeToDo = (id) => [
-        titles.filter((titles) => titles.id != id)
-    ];
+    const removeToDo = (id) => (
+        //titles.filter((titles) => titles.id != id)
+        update_titles(titles.filter((title) => title.id !== id))
+    );
 
-    /* comment for my own understanding
+    /* comment for my own js and react understanding
 
     {titles.map((titles) => all that} is to do the same action over all outputs of map
     */
     return (
-        <view style = {styles.todoListContainercontainer}>
+        <View style = {styles.todoListContainercontainer}>
             {titles.map((titles) => (
-                <view key={titles.id}>
+                <View key={titles.id}>
                     <Text style = {styles.todoItem}>{titles.title}</Text>
                     <View style={styles.buttonContainer}>
                         <Button title="remove" onPress={() => removeToDo(titles.id)} />
                     </View>
-                </view>
+                </View>
             ))}
-            <AddTask onAddTask={/* some stuff */}></AddTask>
-        </view>
+            <AddTask onAddTask={addToDo}></AddTask>
+        </View>
     );
 };
 
@@ -52,3 +54,4 @@ const styles = StyleSheet.create({
     },
 });
 
+export default ToDoList;
